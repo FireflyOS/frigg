@@ -34,4 +34,6 @@ extern "C" {
 	}\
 } while(0)
 
+#define FRG_LIKELY(x) __builtin_expect(!!(x), 1)
+
 #endif // FRG_MACROS_HPP
