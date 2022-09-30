@@ -18,7 +18,7 @@ private:
   T _back{nullptr}, _front{nullptr};
 
 public:
-  template <typename T> struct Element {
+  struct Element {
   public:
     T *next{nullptr};
     T *prev{nullptr};
