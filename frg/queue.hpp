@@ -5,33 +5,29 @@
 #include <sys/types.h> // ssize_t
 
 namespace frg FRG_VISIBILITY {
-template <typename T> class intrusive_queue_item;
 
-enum class QueueResult : uint8_t { ENQUEUE_FAIL, ENQUEUE_OKAY };
+enum class queue_result : uint8_t { Fail, Okay };
 
-template <typename T> class intrusive_queue {
+template <typename T>
+class intrusive_queue {
 private:
-  static constexpr ssize_t limit = -1;
+  using value_type = T;
+  using pointer = value_type *;
   size_t _size{};
 
   // [back] ||||||||| [front]
-  T _back{nullptr}, _front{nullptr};
+  pointer _back{nullptr}, _front{nullptr};
 
 public:
-  struct Element {
+  struct hook {
   public:
-    T *next{nullptr};
-    T *prev{nullptr};
+    pointer next{nullptr};
+    pointer prev{nullptr};
   };
 
-  inline QueueResult enqueue(T item) {
-    if (item == nullptr || item->item_in_queue())
-      return QueueResult::ENQUEUE_FAIL;
-
-    // Did we impose a size limit on NonAllocQueues'?
-    if constexpr (limit != -1)
-      if (_size > limit)
-        return QueueResult::ENQUEUE_FAIL;
+  queue_result enqueue(T *item) {
+    if (FRG_UNLIKELY(item == nullptr))
+      return queue_result::Fail;
 
     if (_back == nullptr)
       _front = _back = item;
@@ -40,12 +36,12 @@ public:
     _back = item;
     _size++;
 
-    return QueueResult::ENQUEUE_OKAY;
+    return queue_result::Okay;
   }
 
-  inline T dequeue() {
+  pointer dequeue() {
     if (empty())
-      return T();
+      return nullptr;
 
     auto node = _front;
     _front = _front->next;
@@ -58,8 +54,11 @@ public:
 
   inline size_t size() const { return _size; }
   inline bool empty() const { return _front == nullptr; }
-  inline T front() const { return _front; }
-  inline T back() const { return _back; }
+  inline T *front() const { return _front; }
+  inline T *back() const { return _back; }
 };
+
+template <typename T>
+using default_queue_hook = intrusive_queue<T>::hook;
 
 } // namespace FRG_VISIBILITY
