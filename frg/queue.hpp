@@ -24,7 +24,7 @@ public:
     T *prev{nullptr};
   };
 
-  inline QueueResult enqueue(T &item) {
+  inline QueueResult enqueue(T item) {
     if (item == nullptr || item->item_in_queue())
       return QueueResult::ENQUEUE_FAIL;
 
