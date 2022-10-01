@@ -39,6 +39,23 @@ public:
     return queue_result::Okay;
   }
 
+  queue_result enqueue_head(T *item) {
+    if (FRG_UNLIKELY(item == nullptr))
+      return queue_result::Fail;
+
+    if (_back == nullptr)
+      _front = _back = item;
+
+	auto& old_front = _front;
+    _front = item;
+	_front->next = old_front->next;
+	
+    _back = item;
+    _size++;
+
+    return queue_result::Okay;
+  }
+
   pointer dequeue() {
     if (empty())
       return nullptr;
