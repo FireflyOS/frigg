@@ -66,6 +66,7 @@ public:
     if (!_front)
       _back = nullptr;
 
+	_size--;
     return node;
   }
 
