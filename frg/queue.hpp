@@ -8,8 +8,7 @@ namespace frg FRG_VISIBILITY {
 
 enum class queue_result : uint8_t { Fail, Okay };
 
-template <typename T>
-class intrusive_queue {
+template <typename T> class intrusive_queue {
 private:
   using value_type = T;
   using pointer = value_type *;
@@ -20,9 +19,7 @@ private:
 
 public:
   struct hook {
-  public:
     pointer next{nullptr};
-    pointer prev{nullptr};
   };
 
   queue_result enqueue(T *item) {
@@ -46,10 +43,10 @@ public:
     if (_back == nullptr)
       _front = _back = item;
 
-	auto& old_front = _front;
+    auto &old_front = _front;
     _front = item;
-	_front->next = old_front->next;
-	
+    _front->next = old_front->next;
+
     _back = item;
     _size++;
 
@@ -66,7 +63,7 @@ public:
     if (!_front)
       _back = nullptr;
 
-	_size--;
+    _size--;
     return node;
   }
 
@@ -76,7 +73,6 @@ public:
   inline T *back() const { return _back; }
 };
 
-template <typename T>
-using default_queue_hook = intrusive_queue<T>::hook;
+template <typename T> using default_queue_hook = intrusive_queue<T>::hook;
 
 } // namespace FRG_VISIBILITY
